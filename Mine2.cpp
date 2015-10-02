@@ -84,19 +84,7 @@ void reseta() {
     posMaxLida = 0;
     poslida = 0;
     mouse_clicado = -1;
-    aguarda = false;
     aceso = false;
-    sequencia_correta = true;
-    mouse_clicado_primeiro_quad = false;
-    mouse_clicado_terceiro_quad = false;
-    mouse_clicado_segundo_quad = false;
-    mouse_clicado_quarto_quad = false;
-    mouse_clicado_quinto_quad = false;
-    mouse_clicado_sexto_quad = false;
-    mouse_clicado_setimo_quad = false;
-    mouse_clicado_oitavo_quad = false;
-    mouse_clicado_nono_quad = false;
-    ja_foi_sorteado_algum_valor = false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
