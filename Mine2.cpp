@@ -48,8 +48,6 @@ void acende_quadrado_sorteado_3x3();
 void acende_quadrado_sorteado_2x2();
 void mostra_sequencia_sorteados_3x3();
 void mostra_sequencia_sorteados_2x2();
-void comeca_renderizacao_3x3();
-void comeca_renderizacao_2x2();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Desenha texto na tela
@@ -77,8 +75,6 @@ void reseta() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void tres_por_tres() {
     reseta();
-    glutDisplayFunc(comeca_renderizacao_3x3);
-    glutMouseFunc(gerencia_mouse_3x3);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,27 +173,6 @@ void renderiza_quadrados_apagados_2x2() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Inicia renderizacao e verificacoes
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void comeca_renderizacao_2x2(void) {
-    if (aguarda == false) {
-        if (sequencia_correta) { //Se o usuario fez a sequencia certa, faz mais uma rodada
-            TIMER = TIMER - 0.05; //A cada rodada a sequencia aparece mais rapida
-            sequencia_correta = false; //Nova rodada, reseta contadores
-            mouse_clicado = -1; //Nova rodada, reseta contadores
-
-            renderiza_quadrados_apagados_2x2();
-            mostra_sequencia_sorteados_2x2();
-            sleep(TIMER);
-            acende_quadrado_sorteado_2x2();
-            sleep(TIMER);
-            renderiza_quadrados_apagados_2x2();
-        }
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Verifica quadrado clicado na tela e depois confere se este esta de acordo com a sequencia ja sorteada
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,24 +208,6 @@ void gerencia_mouse_2x2(int button, int state, int x, int y) {
         }
     }
     glutPostRedisplay();
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Vai acendendo os quadrados ja sorteados na sequencia salva no array
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void mostra_sequencia_sorteados_2x2() {
-
-}
-
-void time_sleep() {
-    
-}
-
-
-void logica_mostra_sequencia() {
-    poslida++;
 }
 
 void desenha_quadrados(int quad) {
@@ -476,89 +433,6 @@ void sorteiaQuadrados() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Sorteia um quadrado e acende o mesmo
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void acende_quadrado_sorteado_2x2() {
-    //Verificacao
-    ja_foi_sorteado_algum_valor = true;
-
-    //Aumenta contador
-    quantidade_sorteada++;
-
-    //Sorteia um quadrado
-    srand(time(NULL));
-    valor_rand = rand() % 4;
-
-    //Preenche o array com os valores sorteados
-    if (valor_rand == 0)
-        valores_sorteados[quantidade_sorteada] = 0;
-    else if (valor_rand == 1)
-        valores_sorteados[quantidade_sorteada] = 1;
-    else if (valor_rand == 2)
-        valores_sorteados[quantidade_sorteada] = 2;
-    else if (valor_rand == 3)
-        valores_sorteados[quantidade_sorteada] = 3;
-
-    //Paleta de cores
-    r1 = 1.0, g1 = 0.0, b1 = 0.0;
-    r2 = 0.0, g2 = 1.0, b2 = 0.0;
-    r3 = 0.0, g3 = 0.0, b3 = 1.0;
-    r4 = 1.0, g4 = 1.0, b4 = 0.0;
-
-    //Ativa quadrado sorteado
-    switch (valor_rand) {
-        case 0:
-            glBegin(GL_QUADS); //primeiro
-            glColor3f(r1, g1, b1);
-            glVertex2f(-win, 0); // x, y
-            glVertex2f(-win, win);
-            glVertex2f(0, win);
-            glVertex2f(0, 0);
-            glEnd();
-            glFlush();
-            glutPostRedisplay();
-
-            break;
-        case 1:
-            glBegin(GL_QUADS); //segundo
-            glColor3f(r2, g2, b2);
-            glVertex2f(0, 0); // x, y
-            glVertex2f(0, win);
-            glVertex2f(win, win);
-            glVertex2f(win, 0);
-            glEnd();
-            glFlush();
-            glutPostRedisplay();
-            break;
-        case 2:
-            glBegin(GL_QUADS); //terceiro
-            glColor3f(r3, g3, b3);
-            glVertex2f(-win, -win); // x, y
-            glVertex2f(-win, 0);
-            glVertex2f(0, 0);
-            glVertex2f(0, -win);
-            glEnd();
-            glFlush();
-            glutPostRedisplay();
-
-            break;
-        case 3:
-            glBegin(GL_QUADS); //quarto
-            glColor3f(r4, g4, b4);
-            glVertex2f(0, -win); // x, y
-            glVertex2f(0, 0);
-            glVertex2f(win, 0);
-            glVertex2f(win, -win);
-            glEnd();
-            glFlush();
-            glutPostRedisplay();
-            break;
-    }
-    aguarda = true;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Renderiza quadrados apagados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -641,28 +515,6 @@ void renderiza_quadrados_apagados_3x3() {
     glFlush();
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Inicia renderizacao e verificacoes
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void comeca_renderizacao_3x3(void) {
-    if (aguarda == false) { //Verificacao
-        if (sequencia_correta) { //Se o usuario fez a sequencia certa, faz mais uma rodada
-            TIMER = TIMER - 0.05; //A cada rodada a sequencia aparece mais rapida
-            sequencia_correta = false; //Nova rodada, reseta contadores
-            mouse_clicado = -1; //Nova rodada, reseta contadores
-
-            renderiza_quadrados_apagados_3x3();
-            mostra_sequencia_sorteados_3x3();
-            sleep(TIMER);
-            acende_quadrado_sorteado_3x3();
-            sleep(TIMER);
-            renderiza_quadrados_apagados_3x3();
-        }
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Chamada pela GLUT quando a janela é redimensionada
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -693,91 +545,10 @@ void gerencia_mouse_3x3(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
 
-            //Obtem valores em relação a resolução da tela
-            xf = ((2 * win * x) / view_w) - win;
-            yf = (((2 * win) * (view_h - y)) / view_h) - win;
-
             //Verifica em qual parte da tela se encontra determinado quadrado
-            if (xf < (-win / 3))
-                if (yf > win / 3) {
-                    mouse_clicado_primeiro_quad = true;
-                } else if (yf > -win / 3 && yf < win / 3) {
-                    mouse_clicado_quarto_quad = true;
-                } else if (yf < -win / 3) {
-                    mouse_clicado_setimo_quad = true;
-                }
-
-
-            if (xf > (-win / 3) && xf < (win / 3))
-                if (yf > win / 3) {
-                    mouse_clicado_segundo_quad = true;
-                } else if (yf > -win / 3 && yf < win / 3) {
-                    mouse_clicado_quinto_quad = true;
-                } else if (yf < -win / 3) {
-                    mouse_clicado_oitavo_quad = true;
-                }
-
-            if (xf > (win / 3))
-                if (yf > win / 3) {
-                    mouse_clicado_terceiro_quad = true;
-                } else if (yf > -win / 3 && yf < win / 3) {
-                    mouse_clicado_sexto_quad = true;
-                } else if (yf < -win / 3) {
-                    mouse_clicado_nono_quad = true;
-                }
-
-            //Contador de cliques do mouse
-            mouse_clicado++;
-
-            //Guarda sequencia em array em relacao ao que o usuario clicou na tela
-            if (mouse_clicado_primeiro_quad == true) {
-                usuario[mouse_clicado] = 0;
-                mouse_clicado_primeiro_quad = false;
-            } else if (mouse_clicado_segundo_quad == true) {
-                usuario[mouse_clicado] = 1;
-                mouse_clicado_segundo_quad = false;
-            } else if (mouse_clicado_terceiro_quad == true) {
-                usuario[mouse_clicado] = 2;
-                mouse_clicado_terceiro_quad = false;
-            } else if (mouse_clicado_quarto_quad == true) {
-                usuario[mouse_clicado] = 3;
-                mouse_clicado_quarto_quad = false;
-            } else if (mouse_clicado_quinto_quad == true) {
-                usuario[mouse_clicado] = 4;
-                mouse_clicado_quinto_quad = false;
-            } else if (mouse_clicado_sexto_quad == true) {
-                usuario[mouse_clicado] = 5;
-                mouse_clicado_sexto_quad = false;
-            } else if (mouse_clicado_setimo_quad == true) {
-                usuario[mouse_clicado] = 6;
-                mouse_clicado_setimo_quad = false;
-            } else if (mouse_clicado_oitavo_quad == true) {
-                usuario[mouse_clicado] = 7;
-                mouse_clicado_oitavo_quad = false;
-            } else if (mouse_clicado_nono_quad == true) {
-                usuario[mouse_clicado] = 8;
-                mouse_clicado_nono_quad = false;
-            }
-
-            //Se a quantidade de cliques for igual a quantidade_sorteada, significa que o usuario escolheu a quantidade total de quadrados,
-            //logo temos que conferir se a sequencia feita pelo mouse, é igual a sorteada pelo programa
-            if (mouse_clicado == quantidade_sorteada) {
-                for (int i = 0; i <= quantidade_sorteada; i++) {
-                    if (valores_sorteados[i] != usuario[i]) {
-                        sequencia_correta = false;
-                        glutDisplayFunc(tela_gameover);
-                    }
-                    if (mouse_clicado == 24) {
-                        glutDisplayFunc(tela_venceu);
-
-                    }
-                    sequencia_correta = true; //Continua o programa se o usuario acertar a sequencia
-                }
-            }
         }
     }
     glutPostRedisplay();
-    aguarda = false; //Verificacao
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -896,154 +667,9 @@ void mostra_sequencia_sorteados_3x3() {
                     break;
             }
             //Mostra quadradados apagados entre uma sequencia e outra do for
-            sleep(TIMER);
             renderiza_quadrados_apagados_3x3();
-            sleep(TIMER);
         }
-        aguarda = true; //Verificacao
     }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Sorteia um quadrado e acende o mesmo
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void acende_quadrado_sorteado_3x3() {
-    //Verificacao
-    ja_foi_sorteado_algum_valor = true;
-
-    //Aumenta contador
-    quantidade_sorteada++;
-
-    //Sorteia um quadrado
-    srand(time(NULL));
-    valor_rand = rand() % 9;
-
-    //Preenche o array com os valores sorteados
-    if (valor_rand == 0)
-        valores_sorteados[quantidade_sorteada] = 0;
-    else if (valor_rand == 1)
-        valores_sorteados[quantidade_sorteada] = 1;
-    else if (valor_rand == 2)
-        valores_sorteados[quantidade_sorteada] = 2;
-    else if (valor_rand == 3)
-        valores_sorteados[quantidade_sorteada] = 3;
-    else if (valor_rand == 4)
-        valores_sorteados[quantidade_sorteada] = 4;
-    else if (valor_rand == 5)
-        valores_sorteados[quantidade_sorteada] = 5;
-    else if (valor_rand == 6)
-        valores_sorteados[quantidade_sorteada] = 6;
-    else if (valor_rand == 7)
-        valores_sorteados[quantidade_sorteada] = 7;
-    else if (valor_rand == 8)
-        valores_sorteados[quantidade_sorteada] = 8;
-
-    //Paleta de cores
-    r1 = 1.0, g1 = 0.0, b1 = 0.0;
-    r2 = 0.0, g2 = 1.0, b2 = 0.0;
-    r3 = 0.0, g3 = 0.0, b3 = 1.0;
-    r4 = 1.0, g4 = 1.0, b4 = 0.0;
-    r5 = 0.9, g5 = 0.8, b5 = 0.8;
-    r6 = 0.0, g6 = 1.0, b6 = 1.0;
-    r7 = 1.0, g7 = 0.7, b7 = 0.7;
-    r8 = 0.0, g8 = 1.0, b8 = 0.7;
-    r9 = 0.5, g9 = 0.7, b9 = 1.0;
-
-    //Ativa quadrado sorteado
-    switch (valor_rand) {
-        case 0:
-            glBegin(GL_QUADS); //primeiro
-            glColor3f(r1, g1, b1);
-            glVertex2f(-win, win / 3); // x, y
-            glVertex2f(-win, win);
-            glVertex2f(-win / 3, win);
-            glVertex2f(-win / 3, win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 1:
-            glBegin(GL_QUADS); //segundo
-            glColor3f(r2, g2, b2);
-            glVertex2f(-win / 3, win / 3); // x, y
-            glVertex2f(-win / 3, win);
-            glVertex2f(win / 3, win);
-            glVertex2f(win / 3, win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 2:
-            glBegin(GL_QUADS); //terceiro
-            glColor3f(r3, g3, b3);
-            glVertex2f(win / 3, win / 3); // x, y
-            glVertex2f(win / 3, win);
-            glVertex2f(win, win);
-            glVertex2f(win, win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 3:
-            glBegin(GL_QUADS); //quarto
-            glColor3f(r4, g4, b4);
-            glVertex2f(-win, -win / 3); // x, y
-            glVertex2f(-win, win / 3);
-            glVertex2f(-win / 3, win / 3);
-            glVertex2f(-win / 3, -win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 4:
-            glBegin(GL_QUADS); //quinto
-            glColor3f(r5, g5, b5);
-            glVertex2f(-win / 3, -win / 3); // x, y
-            glVertex2f(-win / 3, win / 3);
-            glVertex2f(win / 3, win / 3);
-            glVertex2f(win / 3, -win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 5:
-            glBegin(GL_QUADS); //sexto
-            glColor3f(r6, g6, b6);
-            glVertex2f(win / 3, -win / 3); // x, y
-            glVertex2f(win / 3, win / 3);
-            glVertex2f(win, win / 3);
-            glVertex2f(win, -win / 3);
-            glEnd();
-            glFlush();
-            break;
-        case 6:
-            glBegin(GL_QUADS); //setimo
-            glColor3f(r7, g7, b7);
-            glVertex2f(-win, -win); // x, y
-            glVertex2f(-win, -win / 3);
-            glVertex2f(-win / 3, -win / 3);
-            glVertex2f(-win / 3, -win);
-            glEnd();
-            glFlush();
-            break;
-        case 7:
-            glBegin(GL_QUADS); //oitavo
-            glColor3f(r8, g8, b8);
-            glVertex2f(-win / 3, -win); // x, y
-            glVertex2f(-win / 3, -win / 3);
-            glVertex2f(win / 3, -win / 3);
-            glVertex2f(win / 3, -win);
-            glEnd();
-            glFlush();
-            break;
-        case 8:
-            glBegin(GL_QUADS); //novo
-            glColor3f(r9, g9, b9);
-            glVertex2f(win / 3, -win); // x, y
-            glVertex2f(win / 3, -win / 3);
-            glVertex2f(win, -win / 3);
-            glVertex2f(win, -win);
-            glEnd();
-            glFlush();
-            break;
-    }
-    aguarda = true; //Verificacao
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
