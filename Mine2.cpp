@@ -80,7 +80,6 @@ void DesenhaTexto(char *string) {
 //Reseta variaveis memoria
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void reseta() {
-    //quantidade_sorteada = -1;
     posMaxLida = 0;
     poslida = 0;
     mouse_clicado = -1;
