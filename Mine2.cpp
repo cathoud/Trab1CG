@@ -73,9 +73,7 @@ void reseta() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Comeca memoria tres por tres
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void tres_por_tres() {
-    reseta();
-}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Comeca memoria dois por dois
@@ -88,11 +86,15 @@ void PRE_MOSTRAR_SEQUENCIA(int);
 void renderiza_quadrados_apagados_2x2();
 void dois_por_dois() {
     reseta();
-    sorteiaQuadrados();
+    sorteiaQuadrados(4);
     renderiza_quadrados_apagados_2x2();
     glutTimerFunc(WAITTIME,PRE_MOSTRAR_SEQUENCIA,0);
 }
 
+void tres_por_tres() {
+    reseta();
+    sorteiaQuadrados(9);
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Tela branca
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,10 +427,10 @@ void desenha_quad_usuario() {
         renderiza_quadrados_apagados_2x2();
 }
 
-void sorteiaQuadrados() {
+void sorteiaQuadrados(int val) {
     srand(time(NULL));
     for(int i = 0; i < SIZE; i++) {
-        valores_sorteados[i] = rand()%4;
+        valores_sorteados[i] = rand()%val;
     }
 }
 
@@ -555,120 +557,113 @@ void gerencia_mouse_3x3(int button, int state, int x, int y) {
 //Vai acendendo os quadrados ja sorteados na sequencia salva no array
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void mostra_sequencia_sorteados_3x3() {
-    if (ja_foi_sorteado_algum_valor) {
+void quadrado_aceso_3x3(int quad) {
+    renderiza_quadrados_apagados_3x3();
 
-        //Paleta de cores
-        r1 = 1.0, g1 = 0.0, b1 = 0.0;
-        r2 = 0.0, g2 = 1.0, b2 = 0.0;
-        r3 = 0.0, g3 = 0.0, b3 = 1.0;
-        r4 = 1.0, g4 = 1.0, b4 = 0.0;
-        r5 = 0.9, g5 = 0.8, b5 = 0.8;
-        r6 = 0.0, g6 = 1.0, b6 = 1.0;
-        r7 = 1.0, g7 = 0.7, b7 = 0.7;
-        r8 = 0.0, g8 = 1.0, b8 = 0.7;
-        r9 = 0.5, g9 = 0.7, b9 = 1.0;
+    //Paleta de cores
+    r1 = 1.0, g1 = 0.0, b1 = 0.0;
+    r2 = 0.0, g2 = 1.0, b2 = 0.0;
+    r3 = 0.0, g3 = 0.0, b3 = 1.0;
+    r4 = 1.0, g4 = 1.0, b4 = 0.0;
+    r5 = 0.9, g5 = 0.8, b5 = 0.8;
+    r6 = 0.0, g6 = 1.0, b6 = 1.0;
+    r7 = 1.0, g7 = 0.7, b7 = 0.7;
+    r8 = 0.0, g8 = 1.0, b8 = 0.7;
+    r9 = 0.5, g9 = 0.7, b9 = 1.0;
 
-        //Limite maximo
-        int lim_max = quantidade_sorteada;
-
-        //Le array e acende a sequencia ja sorteada
-        for (int i = 0; i <= lim_max; i++) {
-            quantidade_sorteada = i;
-            switch (valores_sorteados[quantidade_sorteada]) {
-                    glBegin(GL_QUADS); //primeiro
-                    glColor3f(r1, g1, b1);
-                    glVertex2f(-win, win / 3); // x, y
-                    glVertex2f(-win, win);
-                    glVertex2f(-win / 3, win);
-                    glVertex2f(-win / 3, win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 1:
-                    glBegin(GL_QUADS); //segundo
-                    glColor3f(r2, g2, b2);
-                    glVertex2f(-win / 3, win / 3); // x, y
-                    glVertex2f(-win / 3, win);
-                    glVertex2f(win / 3, win);
-                    glVertex2f(win / 3, win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 2:
-                    glBegin(GL_QUADS); //terceiro
-                    glColor3f(r3, g3, b3);
-                    glVertex2f(win / 3, win / 3); // x, y
-                    glVertex2f(win / 3, win);
-                    glVertex2f(win, win);
-                    glVertex2f(win, win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 3:
-                    glBegin(GL_QUADS); //quarto
-                    glColor3f(r4, g4, b4);
-                    glVertex2f(-win, -win / 3); // x, y
-                    glVertex2f(-win, win / 3);
-                    glVertex2f(-win / 3, win / 3);
-                    glVertex2f(-win / 3, -win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 4:
-                    glBegin(GL_QUADS); //quinto
-                    glColor3f(r5, g5, b5);
-                    glVertex2f(-win / 3, -win / 3); // x, y
-                    glVertex2f(-win / 3, win / 3);
-                    glVertex2f(win / 3, win / 3);
-                    glVertex2f(win / 3, -win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 5:
-                    glBegin(GL_QUADS); //sexto
-                    glColor3f(r6, g6, b6);
-                    glVertex2f(win / 3, -win / 3); // x, y
-                    glVertex2f(win / 3, win / 3);
-                    glVertex2f(win, win / 3);
-                    glVertex2f(win, -win / 3);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 6:
-                    glBegin(GL_QUADS); //setimo
-                    glColor3f(r7, g7, b7);
-                    glVertex2f(-win, -win); // x, y
-                    glVertex2f(-win, -win / 3);
-                    glVertex2f(-win / 3, -win / 3);
-                    glVertex2f(-win / 3, -win);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 7:
-                    glBegin(GL_QUADS); //oitavo
-                    glColor3f(r8, g8, b8);
-                    glVertex2f(-win / 3, -win); // x, y
-                    glVertex2f(-win / 3, -win / 3);
-                    glVertex2f(win / 3, -win / 3);
-                    glVertex2f(win / 3, -win);
-                    glEnd();
-                    glFlush();
-                    break;
-                case 8:
-                    glBegin(GL_QUADS); //novo
-                    glColor3f(r9, g9, b9);
-                    glVertex2f(win / 3, -win); // x, y
-                    glVertex2f(win / 3, -win / 3);
-                    glVertex2f(win, -win / 3);
-                    glVertex2f(win, -win);
-                    glEnd();
-                    glFlush();
-                    break;
-            }
-            //Mostra quadradados apagados entre uma sequencia e outra do for
-            renderiza_quadrados_apagados_3x3();
-        }
+    switch (quad) {
+        case 9:
+            break;
+        case 0:
+            glBegin(GL_QUADS); //primeiro
+            glColor3f(r1, g1, b1);
+            glVertex2f(-win, win / 3); // x, y
+            glVertex2f(-win, win);
+            glVertex2f(-win / 3, win);
+            glVertex2f(-win / 3, win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 1:
+            glBegin(GL_QUADS); //segundo
+            glColor3f(r2, g2, b2);
+            glVertex2f(-win / 3, win / 3); // x, y
+            glVertex2f(-win / 3, win);
+            glVertex2f(win / 3, win);
+            glVertex2f(win / 3, win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 2:
+            glBegin(GL_QUADS); //terceiro
+            glColor3f(r3, g3, b3);
+            glVertex2f(win / 3, win / 3); // x, y
+            glVertex2f(win / 3, win);
+            glVertex2f(win, win);
+            glVertex2f(win, win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 3:
+            glBegin(GL_QUADS); //quarto
+            glColor3f(r4, g4, b4);
+            glVertex2f(-win, -win / 3); // x, y
+            glVertex2f(-win, win / 3);
+            glVertex2f(-win / 3, win / 3);
+            glVertex2f(-win / 3, -win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 4:
+            glBegin(GL_QUADS); //quinto
+            glColor3f(r5, g5, b5);
+            glVertex2f(-win / 3, -win / 3); // x, y
+            glVertex2f(-win / 3, win / 3);
+            glVertex2f(win / 3, win / 3);
+            glVertex2f(win / 3, -win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 5:
+            glBegin(GL_QUADS); //sexto
+            glColor3f(r6, g6, b6);
+            glVertex2f(win / 3, -win / 3); // x, y
+            glVertex2f(win / 3, win / 3);
+            glVertex2f(win, win / 3);
+            glVertex2f(win, -win / 3);
+            glEnd();
+            glFlush();
+            break;
+        case 6:
+            glBegin(GL_QUADS); //setimo
+            glColor3f(r7, g7, b7);
+            glVertex2f(-win, -win); // x, y
+            glVertex2f(-win, -win / 3);
+            glVertex2f(-win / 3, -win / 3);
+            glVertex2f(-win / 3, -win);
+            glEnd();
+            glFlush();
+            break;
+        case 7:
+            glBegin(GL_QUADS); //oitavo
+            glColor3f(r8, g8, b8);
+            glVertex2f(-win / 3, -win); // x, y
+            glVertex2f(-win / 3, -win / 3);
+            glVertex2f(win / 3, -win / 3);
+            glVertex2f(win / 3, -win);
+            glEnd();
+            glFlush();
+            break;
+        case 8:
+            glBegin(GL_QUADS); //novo
+            glColor3f(r9, g9, b9);
+            glVertex2f(win / 3, -win); // x, y
+            glVertex2f(win / 3, -win / 3);
+            glVertex2f(win, -win / 3);
+            glVertex2f(win, -win);
+            glEnd();
+            glFlush();
+            break;
     }
 }
 
