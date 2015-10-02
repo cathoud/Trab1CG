@@ -29,7 +29,7 @@ int valor_rand;
 int view_w, view_h;
 int clickquad;
 int win = 600;
-float xf = 20, yf = 20;//, win = 600;
+float xf = 20, yf = 20;
 float r1, g1, b1;
 float r2, g2, b2;
 float r3, g3, b3;
@@ -42,18 +42,6 @@ float r9, g9, b9;
 bool clicou = false;
 bool animation = true;
 bool aceso = true;  
-bool aguarda = false;
-bool sequencia_correta = true;
-bool mouse_clicado_primeiro_quad = false;
-bool mouse_clicado_terceiro_quad = false;
-bool mouse_clicado_segundo_quad = false;
-bool mouse_clicado_quarto_quad = false;
-bool mouse_clicado_quinto_quad = false;
-bool mouse_clicado_sexto_quad = false;
-bool mouse_clicado_setimo_quad = false;
-bool mouse_clicado_oitavo_quad = false;
-bool mouse_clicado_nono_quad = false;
-bool ja_foi_sorteado_algum_valor = false;
 void gerencia_mouse_3x3(int button, int state, int x, int y);
 void gerencia_mouse_2x2(int button, int state, int x, int y);
 void acende_quadrado_sorteado_3x3();
@@ -62,8 +50,6 @@ void mostra_sequencia_sorteados_3x3();
 void mostra_sequencia_sorteados_2x2();
 void comeca_renderizacao_3x3();
 void comeca_renderizacao_2x2();
-double TIMER = 2.3;
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Desenha texto na tela
@@ -104,17 +90,11 @@ void desenha_quad_usuario();
 void sorteiaQuadrados();
 void PRE_MOSTRAR_SEQUENCIA(int);
 void renderiza_quadrados_apagados_2x2();
-//void logica();
 void dois_por_dois() {
     reseta();
     sorteiaQuadrados();
-    //mostra_sequencia_sorteados_2x2();
-    //logica();
-    //glutDisplayFunc(desenha_quad);
     renderiza_quadrados_apagados_2x2();
     glutTimerFunc(WAITTIME,PRE_MOSTRAR_SEQUENCIA,0);
-    //glutDisplayFunc(comeca_renderizacao_2x2);
-    //glutMouseFunc(gerencia_mouse_2x2);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,21 +200,11 @@ void comeca_renderizacao_2x2(void) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Verifica quadrado clicado na tela e depois confere se este esta de acordo com a sequencia ja sorteada
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void pos_mouse(int button, int state, int x, int y) {
-    cout << x << " " <<  y << endl;
-    cout << y/(win/2) << x/(win/2);
-    clickquad = 2*(y/(win/2))+x/(win/2);
-    cout << clickquad << endl;
-}
 
 void gerencia_mouse_2x2(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if(clicou) {
             if(state == GLUT_UP) {
-                cout << "posMax" << posMaxLida << endl;
-                cout << "sort" << valores_sorteados[poslida];
-                //cout << "user" << usuario[poslida] << "sort" << valores_sorteados[poslida];
-                //cout << "user" << usuario[poslida+1] << "sort" << valores_sorteados[poslida+1];
                 if(valores_sorteados[poslida] != user) {
                     glutDisplayFunc(tela_gameover);
                     glutMouseFunc(NULL);
@@ -243,7 +213,6 @@ void gerencia_mouse_2x2(int button, int state, int x, int y) {
                 } else if(poslida < posMaxLida) {
                     poslida++;
                 } else {
-                    cout << "passou" << endl;
                     posMaxLida++;
                     glutTimerFunc(100,PRE_MOSTRAR_SEQUENCIA,0);
                 }
@@ -254,75 +223,16 @@ void gerencia_mouse_2x2(int button, int state, int x, int y) {
         if (state == GLUT_DOWN) {
             clicou = true;
             aceso = true;
+
             //Obtem valores em relação a resolução da tela
             clickquad = 2*(y/(win/2))+x/(win/2);
-            /*xf = ((2 * win * x) / view_w) - win;
-            yf = (((2 * win) * (view_h - y)) / view_h) - win;
+            user = clickquad;           
 
-            //Verifica em qual parte da tela se encontra determinado quadrado
-            if (xf < 0)
-                if (yf > 0) {
-                    //mouse_clicado_primeiro_quad = true;
-                    clickquad = 0;
-                } else if (yf < 0) {
-                    //mouse_clicado_terceiro_quad = true;
-                    clickquad = 2;
-                }
-
-            if (xf > 0)
-                if (yf > 0) {
-                    mouse_clicado_segundo_quad = true;
-                } else if (yf < 0) {
-                    mouse_clicado_quarto_quad = true;
-                }
-            */
-            //Contador de cliques do mouse
-            //usuario[poslida] = clickquad;
-            user = clickquad;
-            //poslida++;
-            cout << "quad" << clickquad;
-            /*
-            //Guarda sequencia em array em relacao ao que o usuario clicou na tela
-            if (mouse_clicado_primeiro_quad == true) {
-                usuario[mouse_clicado] = 0;
-                mouse_clicado_primeiro_quad = false;
-            } else if (mouse_clicado_segundo_quad == true) {
-                usuario[mouse_clicado] = 1;
-                mouse_clicado_segundo_quad = false;
-            } else if (mouse_clicado_terceiro_quad == true) {
-                usuario[mouse_clicado] = 2;
-                mouse_clicado_terceiro_quad = false;
-            } else if (mouse_clicado_quarto_quad == true) {
-                usuario[mouse_clicado] = 3;
-                mouse_clicado_quarto_quad = false;
-            }
-            //glutPostRedisplay();
-            //Se a quantidade de cliques for igual a quantidade_sorteada, significa que o usuario escolheu a quantidade total de quadrados,
-            //logo temos que conferir se a sequencia feita pelo mouse, é igual a sorteada pelo programa
-            */
-            cout << "posMax" << posMaxLida << endl;
-            
-            /*
-            if (mouse_clicado == quantidade_sorteada) {
-                for (int i = 0; i <= quantidade_sorteada; i++) {
-                    if (valores_sorteados[i] != usuario[i]) {
-                        sequencia_correta = false;
-                        glutDisplayFunc(tela_gameover);
-                    }
-                    if (mouse_clicado == 24) {
-                        glutDisplayFunc(tela_venceu);
-
-                    }
-                    sequencia_correta = true; //Continua o programa se o usuario acertar a sequencia
-
-                }
-            }*/
         } else if(state == GLUT_UP) {
             aceso = false;
         }
     }
     glutPostRedisplay();
- //   aguarda = false; //Verificacao
 }
 
 
@@ -349,10 +259,9 @@ void desenha_quadrados(int quad) {
     r2 = 0.0, g2 = 1.0, b2 = 0.0;
     r3 = 0.0, g3 = 0.0, b3 = 1.0;
     r4 = 1.0, g4 = 1.0, b4 = 0.0;    
-//switch (valores_sorteados[poslida]) {
+
     switch (quad) {
         case 0:
-            //cout << "primeiro" << endl;
             glBegin(GL_QUADS); //primeiro
             glColor3f(r1, g1, b1);
             glVertex2f(-win, 0); // x, y
@@ -387,8 +296,8 @@ void desenha_quadrados(int quad) {
 
             glFlush();
             break;
+
         case 1:
-            //cout << "segundo" << endl;
             glBegin(GL_QUADS); //segundo
             glColor3f(r2, g2, b2);
             glVertex2f(0, 0); // x, y
@@ -423,8 +332,8 @@ void desenha_quadrados(int quad) {
 
             glFlush();
             break;
+
         case 2:
-            //cout << "terceiro" << endl;
             glBegin(GL_QUADS); //terceiro
             glColor3f(r3, g3, b3);
             glVertex2f(-win, -win); // x, y
@@ -459,8 +368,8 @@ void desenha_quadrados(int quad) {
 
             glFlush();
             break;
+
         case 3:
-            //cout << "quarto" << endl;
             glBegin(GL_QUADS); //quarto
             glColor3f(r4, g4, b4);
             glVertex2f(0, -win); // x, y
@@ -496,7 +405,6 @@ void desenha_quadrados(int quad) {
             glFlush();
             break;   
     }
-        //cout << "apagado" << endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,7 +416,6 @@ void PRE_MOSTRAR_SEQUENCIA(int val) {
     poslida = 0;
     animation = true;
     glutDisplayFunc(desenha_quad);
-    cout << "passou" << endl;
     glutTimerFunc(WAITTIME,logica2,1);
 }
 
@@ -544,7 +451,6 @@ void logica2(int val) {
             glutTimerFunc(WAITTIME,GO,1);
         }
         glutPostRedisplay();
-        cout << poslida << "pos" << valores_sorteados[poslida] <<  endl;
     }
 }
 
