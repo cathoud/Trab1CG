@@ -23,8 +23,6 @@ int usuario[25];
 int user;
 int posMaxLida;
 int poslida;
-int quantidade_sorteada = -1;
-int mouse_clicado = -1;
 int valor_rand;
 int view_w, view_h;
 int clickquad;
@@ -66,7 +64,6 @@ void DesenhaTexto(char *string) {
 void reseta() {
     posMaxLida = 0;
     poslida = 0;
-    mouse_clicado = -1;
     aceso = false;
 }
 
@@ -139,6 +136,130 @@ void tela_go() {
     glColor3f(0.0f, 0.0f, 0.0f);
     DesenhaTexto(texto);
     glFlush();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Verifica quadrado clicado na tela e depois confere se este esta de acordo com a sequencia ja sorteada
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void gerencia_mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON) {
+        if(clicou) {
+            if(state == GLUT_UP) {
+                if(valores_sorteados[poslida] != user) {
+                    glutDisplayFunc(tela_gameover);
+                    glutMouseFunc(NULL);
+                } else if(poslida == SIZE-1) {
+                    glutDisplayFunc(tela_venceu);
+                } else if(poslida < posMaxLida) {
+                    poslida++;
+                } else {
+                    posMaxLida++;
+                    glutTimerFunc(100,PRE_MOSTRAR_SEQUENCIA,0);
+                }
+                clicou = false;
+            }
+        } 
+
+        if (state == GLUT_DOWN) {
+            clicou = true;
+            aceso = true;
+
+            //Obtem valores em relação a resolução da tela
+            if(modo2x2) {
+                clickquad = 2*(y/(win/2))+x/(win/2);
+            } else {
+                clickquad = 3*(y/(win/3))+x/(win/3);    
+            }
+            user = clickquad;           
+
+        } else if(state == GLUT_UP) {
+            aceso = false;
+        }
+    }
+    glutPostRedisplay();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Animação Mostrar Sequencia
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void PRE_MOSTRAR_SEQUENCIA(int val) {
+    glutMouseFunc(NULL);
+    poslida = 0;
+    animation = true;
+    glutDisplayFunc(desenha_quad_sequencia);
+    glutTimerFunc(WAITTIME,DISPLAY_SEQUENCIA,1);
+}
+
+void PLAYING(int val) {
+    glutDisplayFunc(desenha_quad_usuario);
+    glutPostRedisplay();
+    poslida = 0;
+    glutMouseFunc(gerencia_mouse);
+}
+
+void GO(int val) {
+    if(val) {
+        aceso = false;
+        glutTimerFunc(WAITTIME/2,GO,0);
+    } else {
+        glutDisplayFunc(tela_go);
+        glutTimerFunc(WAITTIME,PLAYING,0);
+    }
+    glutPostRedisplay();
+}
+
+void DISPLAY_SEQUENCIA(int val) {
+    if(animation) {
+        glutTimerFunc(WAITTIME,DISPLAY_SEQUENCIA,!val);
+        if(val) {
+            aceso = true;
+        } else {
+            aceso = false;
+            poslida++;
+        }
+        if(poslida>posMaxLida) {
+            animation = false;
+            glutTimerFunc(WAITTIME,GO,1);
+        }
+        glutPostRedisplay();
+    }
+}
+
+void desenha_quad_sequencia() {
+    if(aceso) {
+        if(modo2x2)
+            desenha_quadrados_2x2(valores_sorteados[poslida]);
+        else
+            desenha_quadrados_3x3(valores_sorteados[poslida]);
+    } else {
+        if(modo2x2)
+            desenha_quadrados_2x2(-1);
+        else
+            desenha_quadrados_3x3(-1);
+    }
+}
+
+void desenha_quad_usuario() {
+    if(aceso) {
+        if(modo2x2)
+            desenha_quadrados_2x2(user);
+        else
+            desenha_quadrados_3x3(user);
+    } else {
+        if(modo2x2)
+            desenha_quadrados_2x2(-1);
+        else
+            desenha_quadrados_3x3(-1);
+    }
+}
+
+void sorteiaQuadrados(int val) {
+    srand(time(NULL));
+    for(int i = 0; i < SIZE; i++) {
+        valores_sorteados[i] = rand()%val;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,166 +351,6 @@ void desenha_quadrados_2x2(int quad) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Verifica quadrado clicado na tela e depois confere se este esta de acordo com a sequencia ja sorteada
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void gerencia_mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON) {
-        if(clicou) {
-            if(state == GLUT_UP) {
-                if(valores_sorteados[poslida] != user) {
-                    glutDisplayFunc(tela_gameover);
-                    glutMouseFunc(NULL);
-                } else if(poslida == SIZE-1) {
-                    glutDisplayFunc(tela_venceu);
-                } else if(poslida < posMaxLida) {
-                    poslida++;
-                } else {
-                    posMaxLida++;
-                    glutTimerFunc(100,PRE_MOSTRAR_SEQUENCIA,0);
-                }
-                clicou = false;
-            }
-        } 
-
-        if (state == GLUT_DOWN) {
-            clicou = true;
-            aceso = true;
-
-            //Obtem valores em relação a resolução da tela
-            if(modo2x2) {
-                clickquad = 2*(y/(win/2))+x/(win/2);
-            } else {
-                clickquad = 3*(y/(win/3))+x/(win/3);    
-            }
-            user = clickquad;           
-
-        } else if(state == GLUT_UP) {
-            aceso = false;
-        }
-    }
-    glutPostRedisplay();
-}
-
-/*
-void gerencia_mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON) {
-        if(clicou) {
-            if(state == GLUT_UP) {
-                if(valores_sorteados[poslida] != user) {
-                    glutDisplayFunc(tela_gameover);
-                    glutMouseFunc(NULL);
-                } else if(poslida == SIZE-1) {
-                    glutDisplayFunc(tela_venceu);
-                } else if(poslida < posMaxLida) {
-                    poslida++;
-                } else {
-                    posMaxLida++;
-                    glutTimerFunc(100,PRE_MOSTRAR_SEQUENCIA,0);
-                }
-                clicou = false;
-            }
-        } 
-
-        if (state == GLUT_DOWN) {
-            clicou = true;
-            aceso = true;
-
-            //Obtem valores em relação a resolução da tela
-            clickquad = 3*(y/(win/3))+x/(win/3);
-            user = clickquad;           
-
-        } else if(state == GLUT_UP) {
-            aceso = false;
-        }
-    }
-    glutPostRedisplay();
-}
-*/
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Animação Mostrar Sequencia
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void PRE_MOSTRAR_SEQUENCIA(int val) {
-    glutMouseFunc(NULL);
-    poslida = 0;
-    animation = true;
-    glutDisplayFunc(desenha_quad_sequencia);
-    glutTimerFunc(WAITTIME,DISPLAY_SEQUENCIA,1);
-}
-
-void PLAYING(int val) {
-    glutDisplayFunc(desenha_quad_usuario);
-    glutPostRedisplay();
-    poslida = 0;
-    glutMouseFunc(gerencia_mouse);
-}
-
-void GO(int val) {
-    if(val) {
-        aceso = false;
-        glutTimerFunc(WAITTIME/2,GO,0);
-    } else {
-        glutDisplayFunc(tela_go);
-        glutTimerFunc(WAITTIME,PLAYING,0);
-    }
-    glutPostRedisplay();
-}
-
-void DISPLAY_SEQUENCIA(int val) {
-    if(animation) {
-        glutTimerFunc(WAITTIME,DISPLAY_SEQUENCIA,!val);
-        if(val) {
-            aceso = true;
-        } else {
-            aceso = false;
-            poslida++;
-        }
-        if(poslida>posMaxLida) {
-            animation = false;
-            glutTimerFunc(WAITTIME,GO,1);
-        }
-        glutPostRedisplay();
-    }
-}
-
-void desenha_quad_sequencia() {
-    if(aceso) {
-        if(modo2x2)
-            desenha_quadrados_2x2(valores_sorteados[poslida]);
-        else
-            desenha_quadrados_3x3(valores_sorteados[poslida]);
-    } else {
-        if(modo2x2)
-            desenha_quadrados_2x2(-1);
-        else
-            desenha_quadrados_3x3(-1);
-    }
-}
-
-void desenha_quad_usuario() {
-    if(aceso) {
-        if(modo2x2)
-            desenha_quadrados_2x2(user);
-        else
-            desenha_quadrados_3x3(user);
-    } else {
-        if(modo2x2)
-            desenha_quadrados_2x2(-1);
-        else
-            desenha_quadrados_3x3(-1);
-    }
-}
-
-void sorteiaQuadrados(int val) {
-    srand(time(NULL));
-    for(int i = 0; i < SIZE; i++) {
-        valores_sorteados[i] = rand()%val;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Renderiza quadrados apagados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -470,28 +431,6 @@ void renderiza_quadrados_apagados_3x3() {
     glEnd();
 
     glFlush();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Chamada pela GLUT quando a janela é redimensionada
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void redimensionamento(GLsizei w, GLsizei h) {
-    // Especifica o tamanho da viewport
-    glViewport(0, 0, w, h);
-    view_w = w;
-    view_h = h;
-
-    // Inicializa sistema de coordenadas
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    // Estabelece volume de visualização
-    // (esquerda, direita, inferior, superior)
-    gluOrtho2D(-win, win, -win, win);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -606,6 +545,28 @@ void desenha_quadrados_3x3(int quad) {
             glFlush();
             break;
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Chamada pela GLUT quando a janela é redimensionada
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void redimensionamento(GLsizei w, GLsizei h) {
+    // Especifica o tamanho da viewport
+    glViewport(0, 0, w, h);
+    view_w = w;
+    view_h = h;
+
+    // Inicializa sistema de coordenadas
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    // Estabelece volume de visualização
+    // (esquerda, direita, inferior, superior)
+    gluOrtho2D(-win, win, -win, win);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
